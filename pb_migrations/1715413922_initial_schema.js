@@ -86,16 +86,19 @@ migrate((db) => {
     deleteRule: null
   });
 
-  db.saveCollection(siteConfig);
-  db.saveCollection(members);
-  db.saveCollection(transactions);
-  db.saveCollection(webhookLogs);
-  db.saveCollection(assets);
+  // Use the universal save method
+  db.save(siteConfig);
+  db.save(members);
+  db.save(transactions);
+  db.save(webhookLogs);
+  db.save(assets);
 }, (db) => {
   // Down migration
   const collections = ['site_config', 'members', 'transactions', 'webhook_logs', 'assets'];
   collections.forEach(name => {
-    const collection = db.findCollectionByNameOrId(name);
-    if (collection) db.deleteCollection(collection);
+    try {
+      const collection = db.findCollectionByNameOrId(name);
+      if (collection) db.delete(collection);
+    } catch (e) {}
   });
 });
