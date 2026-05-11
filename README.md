@@ -5,7 +5,8 @@ A high-performance, "One-Click" deployable landing page engine with integrated *
 ## 🚀 One-Click Launch
 
 1.  **Clone** this repository.
-2.  **Configure** the `.env` file:
+2.  **Copy** `.env.example` to `.env`.
+3.  **Configure** the `.env` file:
     *   Set `COMPOSE_PROJECT_NAME` (e.g., `my_client_project`).
     *   Add your `RDP_MERCHANT_ID` and `RDP_SECRET_KEY`.
 3.  **Run** the launch command:
