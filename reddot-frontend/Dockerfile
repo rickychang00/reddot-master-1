@@ -10,10 +10,14 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/public ./public
+
+# Copy built application and dependencies
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+# Copy public folder only if it exists in builder
+COPY --from=builder /app/public* ./public/
 
 EXPOSE 3000
 CMD ["npm", "start"]

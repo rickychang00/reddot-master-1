@@ -8,7 +8,7 @@ services:
       - ./pb_data:/pb_data
       - ./pb_migrations:/pb_migrations
     ports:
-      - "8090:8080"
+      - "${BACKEND_PORT}:8080"
     command:
       - serve
       - --http=0.0.0.0:8080
@@ -23,9 +23,9 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}_frontend
     restart: unless-stopped
     environment:
-      - NEXT_PUBLIC_POCKETBASE_URL=http://localhost:8090
-      - POCKETBASE_INTERNAL_URL=http://pb_backend:8080
+      - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL}
+      - POCKETBASE_INTERNAL_URL=${POCKETBASE_INTERNAL_URL}
     ports:
-      - "9002:3000"
+      - "${FRONTEND_PORT}:3000"
     depends_on:
       - pb_backend
