@@ -1,0 +1,27 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Site config: Public read, Admin write
+    match /settings/siteConfig {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Members: Allow public creation and updates for UAT transaction linking
+    match /members/{memberId} {
+      allow read, create, update: if true; 
+      allow delete: if request.auth != null;
+    }
+    
+    // Transactions: Public creation for CIT logs, Admin read all
+    match /transactions/{transactionId} {
+      allow create, update: if true;
+      allow read, delete: if request.auth != null;
+    }
+    // DEBUG: Raw log to see what RDP is actually sending
+    match /webhook_debug/{id} {
+      allow create: if true;
+    }
+  }
+}
