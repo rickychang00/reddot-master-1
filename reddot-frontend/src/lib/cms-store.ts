@@ -154,15 +154,15 @@ export const INITIAL_CONFIG: SiteConfig = {
 
 export async function updateSiteConfig(newConfig: SiteConfig) {
   try {
-    // In PocketBase, we'll use a single record in 'site_config'
-    const records = await pb.collection('site_config').getFullList({ limit: 1 });
+    const records = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'update-config' });
+
     if (records.length > 0) {
       await pb.collection('site_config').update(records[0].id, { data: newConfig });
     } else {
       await pb.collection('site_config').create({ data: newConfig });
     }
   } catch (err: any) {
-    console.error("Failed to update site config:", err.message);
+    console.error('updateSiteConfig failed:', err?.message);
     throw err;
   }
 }
