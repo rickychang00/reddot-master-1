@@ -4,7 +4,7 @@ migrate((db) => {
       name: 'site_config',
       type: 'base',
       schema: [{ name: 'data', type: 'json' }],
-      listRule: '', viewRule: '', createRule: null, updateRule: null, deleteRule: null
+      listRule: '', viewRule: '', createRule: '@request.auth.id != ""', updateRule: '@request.auth.id != ""', deleteRule: null
     },
     {
       name: 'members',
