@@ -98,9 +98,10 @@ export default function AdminPage() {
     const verifyAuth = async () => {
       if (!pb.authStore.isValid) { router.push('/login'); return; }
       try {
-        await pb.collection('users').authRefresh();
+        await pb.collection('users').authRefresh({ requestKey: 'admin-auth-refresh' });
         setAuthLoading(false);
-      } catch {
+      } catch (err: any) {
+        if (err?.isAbort) return;
         pb.authStore.clear();
         router.push('/login');
       }
