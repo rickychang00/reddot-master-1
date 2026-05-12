@@ -26,10 +26,10 @@ function HomePageContent() {
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const records = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'home-config' });
-        if (records.length > 0) {
+        const result = await pb.collection('site_config').getList(1, 1, { sort: '-created', requestKey: 'home-config' });
+        if (result.items.length > 0) {
           // Merge database data with defaults to ensure new fields are never blank
-          setConfig({ ...INITIAL_CONFIG, ...records[0].data });
+          setConfig({ ...INITIAL_CONFIG, ...result.items[0].data });
         }
       } catch (e: any) {
         console.warn("Config fetch failed (using defaults):", e?.message ?? e);

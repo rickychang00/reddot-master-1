@@ -22,9 +22,9 @@ export function Navbar() {
     // Fetch config & Subscribe
     const fetchConfig = async () => {
       try {
-        const records = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'navbar-config' });
-        if (records.length > 0) {
-          setConfig({ ...INITIAL_CONFIG, ...records[0].data });
+        const result = await pb.collection('site_config').getList(1, 1, { sort: '-created', requestKey: 'navbar-config' });
+        if (result.items.length > 0) {
+          setConfig({ ...INITIAL_CONFIG, ...result.items[0].data });
         }
       } catch (e: any) {
         if (e?.isAbort) return;

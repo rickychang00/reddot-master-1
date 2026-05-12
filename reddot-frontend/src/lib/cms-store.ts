@@ -154,7 +154,8 @@ export const INITIAL_CONFIG: SiteConfig = {
 
 export async function updateSiteConfig(newConfig: SiteConfig) {
   try {
-    const records = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'update-config' });
+    const result = await pb.collection('site_config').getList(1, 1, { sort: '-created', requestKey: 'update-config' });
+    const records = result.items;
 
     if (records.length > 0) {
       await pb.collection('site_config').update(records[0].id, { data: newConfig });
@@ -191,9 +192,9 @@ export async function linkTransactionToMember(memberId: string, transactionId: s
 
     // 2. Try to calculate nextChargeAt if it's a recurring tier
     try {
-      const configRecords = await pb.collection('site_config').getFullList({ limit: 1 });
-      if (configRecords.length > 0) {
-        const config = configRecords[0].data as SiteConfig;
+      const configResult = await pb.collection('site_config').getList(1, 1);
+      if (configResult.items.length > 0) {
+        const config = configResult.items[0].data as SiteConfig;
         const tier = config.tiers.find(t => t.id === member.tierId);
         
         if (tier && tier.period !== 'once') {

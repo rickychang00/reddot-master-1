@@ -35,10 +35,10 @@ function RegisterFormContent() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const configRecords = await pb.collection('site_config').getFullList({ limit: 1 });
-        if (configRecords.length > 0) setConfig(configRecords[0].data);
-        
-        const memRecords = await pb.collection('members').getFullList();
+        const configResult = await pb.collection('site_config').getList(1, 1);
+        if (configResult.items.length > 0) setConfig(configResult.items[0].data);
+
+        const memRecords = await pb.collection('members').getFullList({ batch: 500 });
         setMembers(memRecords as any);
       } catch (e) {} finally {
         setLoading(false);

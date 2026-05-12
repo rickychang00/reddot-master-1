@@ -112,15 +112,15 @@ export default function AdminPage() {
     if (authLoading) return;
     const fetchData = async () => {
       try {
-        const configRecords = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'admin-config' });
-        if (configRecords.length > 0) {
-          setLocalConfig({ ...INITIAL_CONFIG, ...configRecords[0].data });
+        const configResult = await pb.collection('site_config').getList(1, 1, { sort: '-created', requestKey: 'admin-config' });
+        if (configResult.items.length > 0) {
+          setLocalConfig({ ...INITIAL_CONFIG, ...configResult.items[0].data });
         }
 
         const txRecords = await pb.collection('transactions').getList<any>(1, 50, { sort: '-created' });
         setTransactions(txRecords.items.map(it => ({ ...it, timestamp: it.created })));
 
-        const memRecords = await pb.collection('members').getFullList<any>({ sort: '-created' });
+        const memRecords = await pb.collection('members').getFullList<any>({ sort: '-created', batch: 500 });
         setMembers(memRecords.map(it => ({ ...it, registeredAt: it.created })));
       } catch (err: any) {
         console.warn("Fetch failed:", err?.message ?? err);
