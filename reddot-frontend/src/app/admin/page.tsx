@@ -102,27 +102,32 @@ export default function AdminPage() {
     if (authLoading) return;
     const fetchData = async () => {
       try {
-        const configRecords = await pb.collection('site_config').getFullList({ limit: 1 });
-        if (configRecords.length > 0) setLocalConfig(configRecords[0].data);
-        setConfigLoading(false);
+        const configRecords = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'admin-config' });
+        if (configRecords.length > 0) {
+          setLocalConfig({ ...INITIAL_CONFIG, ...configRecords[0].data });
+        }
 
         const txRecords = await pb.collection('transactions').getList<any>(1, 50, { sort: '-created' });
         setTransactions(txRecords.items.map(it => ({ ...it, timestamp: it.created })));
 
         const memRecords = await pb.collection('members').getFullList<any>({ sort: '-created' });
         setMembers(memRecords.map(it => ({ ...it, registeredAt: it.created })));
-      } catch (err: any) { console.error("Fetch failed:", err.message); }
+      } catch (err: any) {
+        console.warn("Fetch failed:", err?.message ?? err);
+      } finally {
+        setConfigLoading(false);
+      }
     };
     fetchData();
 
     pb.collection('transactions').subscribe('*', (e) => {
       if (e.action === 'create') setTransactions(prev => [{ ...e.record, timestamp: e.record.created } as any, ...prev].slice(0, 50));
-    });
+    }).catch(() => {});
 
     pb.collection('members').subscribe('*', (e) => {
       if (e.action === 'create') setMembers(prev => [{ ...e.record, registeredAt: e.record.created } as any, ...prev]);
       else if (e.action === 'update') setMembers(prev => prev.map(m => m.id === e.record.id ? { ...e.record, registeredAt: e.record.created } as any : m));
-    });
+    }).catch(() => {});
 
     return () => { pb.collection('transactions').unsubscribe(); pb.collection('members').unsubscribe(); };
   }, [authLoading]);
@@ -131,7 +136,9 @@ export default function AdminPage() {
     try {
       await updateSiteConfig(localConfig);
       toast({ title: "Settings Published", description: "Your master template has been updated." });
-    } catch (err: any) { toast({ variant: "destructive", title: "Save Failed", description: err.message }); }
+    } catch (err: any) {
+      toast({ variant: "destructive", title: "Save Failed", description: err?.message });
+    }
   };
 
   const addTier = () => {
