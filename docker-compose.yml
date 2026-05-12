@@ -25,6 +25,8 @@ services:
     environment:
       - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL}
       - POCKETBASE_INTERNAL_URL=${POCKETBASE_INTERNAL_URL}
+      - RDP_MID=${RDP_MID}
+      - RDP_SECRET_KEY=${RDP_SECRET_KEY}
     ports:
       - "${FRONTEND_PORT}:3000"
     depends_on:
