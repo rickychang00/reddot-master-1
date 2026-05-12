@@ -14,8 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('admin@admin.com');
+  const [password, setPassword] = useState('Admin1234!');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{ message: string } | null>(null);
   const router = useRouter();

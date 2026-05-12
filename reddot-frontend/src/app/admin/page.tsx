@@ -95,7 +95,17 @@ export default function AdminPage() {
   const [isProcessingMIT, setIsProcessingMIT] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!pb.authStore.isValid) { router.push('/login'); } else { setAuthLoading(false); }
+    const verifyAuth = async () => {
+      if (!pb.authStore.isValid) { router.push('/login'); return; }
+      try {
+        await pb.collection('users').authRefresh();
+        setAuthLoading(false);
+      } catch {
+        pb.authStore.clear();
+        router.push('/login');
+      }
+    };
+    verifyAuth();
   }, [router]);
 
   useEffect(() => {
