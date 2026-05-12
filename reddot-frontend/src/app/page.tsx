@@ -4,6 +4,7 @@ import { Hero } from '@/components/landing/Hero';
 import { TierSection } from '@/components/landing/TierSection';
 import { pb } from '@/lib/pocketbase';
 import { INITIAL_CONFIG, SiteConfig, linkTransactionToMember, recordTransaction } from '@/lib/cms-store';
+import { resolveAssetUrl } from '@/lib/asset-url';
 import { useEffect, Suspense, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -111,7 +112,7 @@ function HomePageContent() {
       <Hero 
         title={config.heroTitle} 
         subtitle={config.heroSubtitle} 
-        imageUrl={config.heroImageUrl} 
+        imageUrl={resolveAssetUrl(config.heroImageUrl)} 
         buttons={config.heroButtons}
         badge={config.heroBadge}
       />
@@ -138,7 +139,7 @@ function HomePageContent() {
                 )}
               </div>
               <div className={cn("relative aspect-video rounded-3xl overflow-hidden shadow-2xl", !feature.imageRight ? "md:order-1" : "md:order-2")}>
-                <img src={feature.imageUrl || "https://picsum.photos/seed/cms-preview/800/600"} alt={feature.title} className="object-cover w-full h-full" />
+                <img src={resolveAssetUrl(feature.imageUrl) || "https://picsum.photos/seed/cms-preview/800/600"} alt={feature.title} className="object-cover w-full h-full" />
               </div>
             </div>
           </div>

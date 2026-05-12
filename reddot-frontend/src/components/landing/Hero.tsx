@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { NavLink } from '@/lib/cms-store';
+import { resolveAssetUrl } from '@/lib/asset-url';
 
 interface HeroProps {
   title: string;
@@ -14,7 +15,7 @@ interface HeroProps {
 
 export function Hero({ title, subtitle, imageUrl, buttons, badge }: HeroProps) {
   const defaultHero = "https://picsum.photos/seed/tiered-hero/1200/800";
-  const bgImage = imageUrl || defaultHero;
+  const bgImage = resolveAssetUrl(imageUrl) || defaultHero;
 
   return (
     <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">

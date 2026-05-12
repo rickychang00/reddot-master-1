@@ -6,6 +6,7 @@ import { Shield, Settings, User, LogOut, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { pb } from '@/lib/pocketbase';
 import { SiteConfig, INITIAL_CONFIG } from '@/lib/cms-store';
+import { resolveAssetUrl } from '@/lib/asset-url';
 
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
@@ -55,10 +56,10 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center space-x-2">
             {config.companyLogoUrl ? (
-              <img 
-                src={config.companyLogoUrl} 
-                alt={config.companyName} 
-                className="h-8 w-auto object-contain" 
+              <img
+                src={resolveAssetUrl(config.companyLogoUrl)}
+                alt={config.companyName}
+                className="h-8 w-auto object-contain"
               />
             ) : (
               <Shield className="h-6 w-6 text-primary" />

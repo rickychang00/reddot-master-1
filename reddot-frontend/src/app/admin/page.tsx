@@ -44,6 +44,7 @@ import {
   TransactionRecord,
   MemberProfile
 } from '@/lib/cms-store';
+import { resolveAssetUrl } from '@/lib/asset-url';
 import { useToast } from '@/hooks/use-toast';
 import { requestRDPMITPayment } from '@/app/actions/payment';
 import Image from 'next/image';
@@ -61,8 +62,7 @@ function ImageUploadField({ value, onChange, label }: { value: string, onChange:
       const formData = new FormData();
       formData.append('file', file);
       const record = await pb.collection('assets').create(formData);
-      const url = `${pb.baseUrl}/api/files/${record.collectionId}/${record.id}/${record.file}`;
-      onChange(url);
+      onChange(`/api/files/${record.collectionId}/${record.id}/${record.file}`);
       toast({ title: "Upload Success" });
     } catch (err: any) {
       toast({ variant: "destructive", title: "Upload Failed", description: "Create 'assets' collection first." });
@@ -263,7 +263,7 @@ export default function AdminPage() {
                    <p className="text-xs text-muted-foreground mb-4 uppercase font-bold tracking-widest">Logo Preview</p>
                    <div className="relative w-32 h-32 bg-white rounded-xl shadow-md flex items-center justify-center overflow-hidden">
                       {localConfig.companyLogoUrl ? (
-                        <Image src={localConfig.companyLogoUrl} alt="Logo" fill unoptimized className="object-contain p-4" />
+                        <Image src={resolveAssetUrl(localConfig.companyLogoUrl)} alt="Logo" fill unoptimized className="object-contain p-4" />
                       ) : (
                         <Building2 className="w-12 h-12 text-muted/30" />
                       )}
@@ -322,7 +322,7 @@ export default function AdminPage() {
                   <ImageUploadField label="Hero Background Image URL" value={localConfig.heroImageUrl} onChange={(val) => setLocalConfig({...localConfig, heroImageUrl: val})} />
                 </div>
                 <div className="relative aspect-video rounded-2xl overflow-hidden border-4 border-white shadow-2xl">
-                  <Image src={localConfig.heroImageUrl} alt="Preview" fill unoptimized className="object-cover" />
+                  <Image src={resolveAssetUrl(localConfig.heroImageUrl)} alt="Preview" fill unoptimized className="object-cover" />
                   <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-8 text-center">
                       {localConfig.heroBadge && (
                         <div className="px-2 py-0.5 rounded-full bg-white/20 text-white text-[8px] font-bold border border-white/20 mb-2">
@@ -369,7 +369,7 @@ export default function AdminPage() {
                       </div>
                       <div className="space-y-4">
                         <ImageUploadField label="Image URL" value={feature.imageUrl} onChange={(val) => setLocalConfig({...localConfig, features: localConfig.features.map(f => f.id === feature.id ? {...f, imageUrl: val} : f)})} />
-                        <div className="relative aspect-video rounded-xl overflow-hidden border-2 bg-muted/10 shadow-sm"><Image src={feature.imageUrl || 'https://picsum.photos/800/600'} alt="Preview" fill unoptimized className="object-cover" /></div>
+                        <div className="relative aspect-video rounded-xl overflow-hidden border-2 bg-muted/10 shadow-sm"><Image src={resolveAssetUrl(feature.imageUrl) || 'https://picsum.photos/800/600'} alt="Preview" fill unoptimized className="object-cover" /></div>
                         <div className="flex items-center justify-between p-4 border rounded-xl bg-muted/20">
                           <Label>Image Position</Label>
                           <div className="flex items-center gap-4">
