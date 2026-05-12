@@ -21,17 +21,22 @@ export function Navbar() {
     // Fetch config & Subscribe
     const fetchConfig = async () => {
       try {
-        const records = await pb.collection('site_config').getFullList({ limit: 1 });
-        if (records.length > 0) setConfig(records[0].data);
-      } catch (e) {}
+        const records = await pb.collection('site_config').getFullList({ sort: '-created', requestKey: 'navbar-config' });
+        if (records.length > 0) {
+          setConfig({ ...INITIAL_CONFIG, ...records[0].data });
+        }
+      } catch (e: any) {
+        if (e?.isAbort) return;
+        console.warn('[Navbar fetchConfig] failed:', e?.message);
+      }
     };
     fetchConfig();
 
     pb.collection('site_config').subscribe('*', (e) => {
       if (e.action === 'update' || e.action === 'create') {
-        setConfig(e.record.data);
+        setConfig({ ...INITIAL_CONFIG, ...e.record.data });
       }
-    });
+    }).catch(() => {});
 
     return () => {
       unsub();
