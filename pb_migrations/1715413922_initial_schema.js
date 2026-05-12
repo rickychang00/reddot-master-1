@@ -13,7 +13,7 @@ migrate((app) => {
         { name: 'email', type: 'email', required: true },
         { name: 'name', type: 'text' },
         { name: 'tierId', type: 'text' },
-        { name: 'paymentStatus', type: 'select', options: { maxSelect: 1, values: ['active', 'inactive', 'failed', 'completed'] } },
+        { name: 'paymentStatus', type: 'select', maxSelect: 1, values: ['active', 'inactive', 'failed', 'completed'] },
         { name: 'payerId', type: 'text' },
         { name: 'orderId', type: 'text' },
         { name: 'lastTransactionId', type: 'text' },
@@ -32,7 +32,7 @@ migrate((app) => {
         { name: 'amount', type: 'text' },
         { name: 'status', type: 'text' },
         { name: 'tierName', type: 'text' },
-        { name: 'type', type: 'select', options: { maxSelect: 1, values: ['CIT', 'MIT'] } },
+        { name: 'type', type: 'select', maxSelect: 1, values: ['CIT', 'MIT'] },
         { name: 'transactionId', type: 'text' },
         { name: 'rdpResponse', type: 'json' }
       ],
@@ -51,7 +51,7 @@ migrate((app) => {
       name: 'assets',
       type: 'base',
       fields: [
-        { name: 'file', type: 'file', options: { maxSelect: 1, maxSize: 5242880 } }
+        { name: 'file', type: 'file', maxSelect: 1, maxSize: 5242880 }
       ],
       listRule: '', viewRule: '', createRule: '', updateRule: null, deleteRule: null
     }
