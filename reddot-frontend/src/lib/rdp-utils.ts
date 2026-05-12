@@ -5,10 +5,10 @@ import { createHash } from "node:crypto";
  */
 
 export const RDP_PAYMENT_URL = "https://secure-dev.reddotpayment.com/service/payment-api";
-export const RDP_ENQUIRY_URL = "https://test.reddotpayment.com/instanpanel/api/enquiry"; 
+export const RDP_ENQUIRY_URL = "https://test.reddotpayment.com/instanpanel/api/enquiry";
 
-export const MID = "1007785341";
-export const SECRET_KEY = "xoHTw73DvlC5KBemyL34lucmqdCipCZjHzt6LTI55BV8K17SmvII8OUdoyfAN6QJzXBJBIzMRsaXJvhGLBGTgDzqiZVMV6ifDfl6YSayE9k5R9SDubtvkdmwbDaRmI3N";
+export const MID = process.env.RDP_MID ?? "";
+export const SECRET_KEY = process.env.RDP_SECRET_KEY ?? "";
 
 /**
  * Calculates RDP signature based on the specific field order provided by RDP.
