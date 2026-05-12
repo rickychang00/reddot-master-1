@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+ARG NEXT_PUBLIC_POCKETBASE_URL=http://localhost:8090
+ENV NEXT_PUBLIC_POCKETBASE_URL=$NEXT_PUBLIC_POCKETBASE_URL
 RUN npm run build
 
 # STAGE 2: Run

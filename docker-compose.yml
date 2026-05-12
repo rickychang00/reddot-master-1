@@ -20,6 +20,8 @@ services:
     build:
       context: ./reddot-frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_POCKETBASE_URL=${NEXT_PUBLIC_POCKETBASE_URL}
     container_name: ${COMPOSE_PROJECT_NAME}_frontend
     restart: unless-stopped
     environment:
