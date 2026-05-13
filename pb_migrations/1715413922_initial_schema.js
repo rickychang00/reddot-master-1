@@ -1,14 +1,19 @@
 migrate((app) => {
+  // PocketBase v0.23+ requires autodate fields to be explicitly declared.
+  // Rules must be set as properties on the Collection object, not in the constructor config.
+  const AUTODATE = [
+    { type: 'autodate', name: 'created', onCreate: true, onUpdate: false },
+    { type: 'autodate', name: 'updated', onCreate: true, onUpdate: true },
+  ];
+
   const collections = [
     {
       name: 'site_config',
-      type: 'base',
-      fields: [{ name: 'data', type: 'json' }],
+      fields: [{ name: 'data', type: 'json' }, ...AUTODATE],
       listRule: '', viewRule: '', createRule: '@request.auth.id != ""', updateRule: '@request.auth.id != ""', deleteRule: null
     },
     {
       name: 'members',
-      type: 'base',
       fields: [
         { name: 'email', type: 'email', required: true },
         { name: 'name', type: 'text' },
@@ -19,13 +24,13 @@ migrate((app) => {
         { name: 'lastTransactionId', type: 'text' },
         { name: 'hasPaymentConsent', type: 'bool' },
         { name: 'nextChargeAt', type: 'date' },
-        { name: 'rdpResponse', type: 'json' }
+        { name: 'rdpResponse', type: 'json' },
+        ...AUTODATE
       ],
       listRule: '', viewRule: '', createRule: '', updateRule: '', deleteRule: null
     },
     {
       name: 'transactions',
-      type: 'base',
       fields: [
         { name: 'memberId', type: 'text' },
         { name: 'memberName', type: 'text' },
@@ -34,24 +39,25 @@ migrate((app) => {
         { name: 'tierName', type: 'text' },
         { name: 'type', type: 'select', maxSelect: 1, values: ['CIT', 'MIT'] },
         { name: 'transactionId', type: 'text' },
-        { name: 'rdpResponse', type: 'json' }
+        { name: 'rdpResponse', type: 'json' },
+        ...AUTODATE
       ],
       listRule: '', viewRule: '', createRule: '', updateRule: null, deleteRule: null
     },
     {
       name: 'webhook_logs',
-      type: 'base',
       fields: [
         { name: 'payload', type: 'json' },
-        { name: 'timestamp', type: 'date' }
+        { name: 'timestamp', type: 'date' },
+        ...AUTODATE
       ],
       listRule: null, viewRule: null, createRule: '', updateRule: null, deleteRule: null
     },
     {
       name: 'assets',
-      type: 'base',
       fields: [
-        { name: 'file', type: 'file', maxSelect: 1, maxSize: 5242880 }
+        { name: 'file', type: 'file', maxSelect: 1, maxSize: 5242880 },
+        ...AUTODATE
       ],
       listRule: '', viewRule: '', createRule: '', updateRule: null, deleteRule: null
     }
@@ -61,7 +67,12 @@ migrate((app) => {
     try {
       app.findCollectionByNameOrId(config.name);
     } catch (e) {
-      const collection = new Collection(config);
+      const collection = new Collection({ name: config.name, type: 'base', fields: config.fields });
+      collection.listRule   = config.listRule;
+      collection.viewRule   = config.viewRule;
+      collection.createRule = config.createRule;
+      collection.updateRule = config.updateRule;
+      collection.deleteRule = config.deleteRule;
       app.save(collection);
     }
   }
