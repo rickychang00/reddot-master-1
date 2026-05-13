@@ -56,7 +56,7 @@ migrate((app) => {
     {
       name: 'assets',
       fields: [
-        { name: 'file', type: 'file', maxSelect: 1, maxSize: 5242880 },
+        { name: 'file', type: 'file', maxSelect: 1, maxSize: 10485760 },
         ...AUTODATE
       ],
       listRule: '', viewRule: '', createRule: '', updateRule: null, deleteRule: null

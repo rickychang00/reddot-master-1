@@ -54,18 +54,33 @@ function ImageUploadField({ value, onChange, label }: { value: string, onChange:
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
+  const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB — must match assets collection maxSize
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > MAX_UPLOAD_BYTES) {
+      toast({
+        variant: "destructive",
+        title: "File Too Large",
+        description: `Maximum size is 10 MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)} MB.`,
+      });
+      e.target.value = '';
+      return;
+    }
+
     setIsUploading(true);
     try {
       const formData = new FormData();
       formData.append('file', file);
       const record = await pb.collection('assets').create(formData);
-      onChange(`/api/files/${record.collectionId}/${record.id}/${record.file}`);
+      const filename = Array.isArray(record.file) ? record.file[0] : record.file;
+      onChange(`/api/files/${record.collectionId}/${record.id}/${filename}`);
       toast({ title: "Upload Success" });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Upload Failed", description: "Create 'assets' collection first." });
+      const detail = err?.data?.file?.message ?? err?.message ?? 'Unknown error';
+      toast({ variant: "destructive", title: "Upload Failed", description: detail });
     } finally { setIsUploading(false); }
   };
 
