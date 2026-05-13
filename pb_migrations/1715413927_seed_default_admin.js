@@ -1,5 +1,4 @@
 migrate((app) => {
-  // Skip if any users already exist (don't overwrite real credentials)
   const existing = app.findAllRecords("users");
   if (existing && existing.length > 0) return;
 
@@ -8,8 +7,9 @@ migrate((app) => {
     email: "admin@admin.com",
     emailVisibility: true,
     verified: true,
+    password: "Admin1234!",
+    passwordConfirm: "Admin1234!",
   });
-  record.setPassword("Admin1234!");
   app.save(record);
 }, (app) => {
   try {
