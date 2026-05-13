@@ -24,7 +24,8 @@ export async function authenticateAdmin() {
   if (pbAdmin.authStore.isValid) return;
 
   try {
-    await pbAdmin.admins.authWithPassword(email, password);
+    // PocketBase v0.23+: superusers replaced the old admins API
+    await pbAdmin.collection('_superusers').authWithPassword(email, password);
   } catch (err: any) {
     console.error("PocketBase Admin Auth Failed:", err.message);
   }
